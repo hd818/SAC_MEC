@@ -12,7 +12,7 @@ import gym
 from gym import wrappers
 
 
-UEnet = Agent(input_dims=8, env=None, n_actions=2)
+UEnet = Agent(input_dims=[8], env=None, n_actions=2)
 '''原设定参数
  UEnet = Agent(alpha=0.000025, beta=0.00025, input_dims = 8, tau=0.001, \
               env=None, batch_size=64, layer1_size=500, layer2_size=300,
