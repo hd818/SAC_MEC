@@ -18,7 +18,7 @@ GHZ = MHZ*1e3
 # Time scales
 slot = 1e-2  # seconds
 action_slot = 5e-2  # seconds ---- Handle this carefully!!!
-time_total = 200  # seconds   total simulation time
+time_total = 2000  # seconds   total simulation time
 
 # BaseStation
 BS2MECS_rate = np.array([0, 0.0001, 0.0002, 0.0003, 0.0004])/KB  # sec/KB
