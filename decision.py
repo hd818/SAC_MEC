@@ -2,12 +2,13 @@ import os
 import torch as T
 import torch.nn.functional as F
 import torch.nn as nn
+from buffer import ReplayBuffer
 # from networks import ActorNetwork, CriticNetwork,  ValueNetwork
 import torch.optim as optim
 from torch.distributions.normal import Normal
 
 
-class Agent():
+class Agent(object):
     def __init__(self, alpha=0.0003, beta=0.0003, input_dims=[8],
                  env=None, gamma=0.99, n_actions=2, max_size=1000000, tau=0.005,
                  layer1_size=256, layer2_size=256, batch_size=256, reward_scale=2):
@@ -17,7 +18,7 @@ class Agent():
         self.batch_size = batch_size
         self.n_actions = n_actions
 
-        self.actor = ActorNetwork(alpha, input_dims, max_action=env.action_space.high,
+        self.actor = ActorNetwork(alpha, input_dims, max_action=8,  #max_action=env.action_space.high
                                   n_actions=n_actions, name='actor')
         self.critic_1 = CriticNetwork(beta, input_dims, n_actions=n_actions,
                                       name='critic_1')
@@ -34,6 +35,17 @@ class Agent():
         actions, _ = self.actor.sample_normal(state, reparameterize=False)
 
         return actions.cpu().detach().numpy()[0]
+
+    # def choose_action(self, observation):
+    #     self.actor.eval()
+    #     observation = T.tensor(observation, dtype=T.float).to(\
+    #                           self.actor.device)
+    #     mu = self.actor(observation).to(self.actor.device)
+    #     # mu_prime = mu + T.tensor(self.noise(),
+    #     #                          dtype=T.float).to(self.actor.device)
+    #     # when adding noise, the bound operation should be implemented
+    #     self.actor.train()
+    #     return mu.cpu().detach().numpy()
 
     def remember(self, state, action, reward, new_state, done):
         self.memory.store_transition(state, action, reward, new_state, done)
@@ -131,7 +143,7 @@ class Agent():
 
 class CriticNetwork(nn.Module):
     def __init__(self, beta, input_dims, n_actions, fc1_dims=256, fc2_dims=256,
-            name='critic', chkpt_dir='tmp/sac'):
+            name='critic', chkpt_dir='F:\MEC_SAC'):
         super(CriticNetwork, self).__init__()
         self.input_dims = input_dims
         self.fc1_dims = fc1_dims
@@ -168,7 +180,7 @@ class CriticNetwork(nn.Module):
 
 class ValueNetwork(nn.Module):
     def __init__(self, beta, input_dims, fc1_dims=256, fc2_dims=256,
-            name='value', chkpt_dir='tmp/sac'):
+            name='value', chkpt_dir='F:\MEC_SAC'):
         super(ValueNetwork, self).__init__()
         self.input_dims = input_dims
         self.fc1_dims = fc1_dims
@@ -204,7 +216,7 @@ class ValueNetwork(nn.Module):
 
 class ActorNetwork(nn.Module):
     def __init__(self, alpha, input_dims, max_action, fc1_dims=256,
-            fc2_dims=256, n_actions=2, name='actor', chkpt_dir='tmp/sac'):
+            fc2_dims=256, n_actions=2, name='actor', chkpt_dir='F:\MEC_SAC'):
         super(ActorNetwork, self).__init__()
         self.input_dims = input_dims
         self.fc1_dims = fc1_dims

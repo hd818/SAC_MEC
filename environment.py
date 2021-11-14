@@ -18,7 +18,7 @@ class MECsystem(object):
         self.initialize()
 
     def initialize(self):
-        for i in range(3):            ###for i in range(50):
+        for i in range(50):            ###for i in range(50):
             self.UEs.append(random_create_UE())  # initialized as 50 UEs
         while not self.MECS.apply:
             i = 0
