@@ -59,8 +59,8 @@ class UserEquipment(Node):
                  P_send, Prtask, charging_speed_range, x1, y1, x2, y2, \
                  battery=None):
         super().__init__()
-        self.B = full_Battery
-        self.b = battery
+        self.B = full_Battery        #最大电池容量
+        self.b = battery             #电量
         if self.b == None:
             self.b = self.B
         self.f = CPU_frequency

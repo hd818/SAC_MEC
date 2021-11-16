@@ -75,12 +75,11 @@ class Reward(object):
 
     def battery_empty(self):
         self.reward += self.c_battery_empty
-
-    # print('电源没电后：reward is {}'.format(self.reward))
+        # print('电源没电后：reward is {}'.format(self.reward))
 
     def get_reward(self):
         return self.reward
 
     def reset(self):
-        self.reward = 100
+        self.reward = 100        # self.reward = 100
         # print('重置后：reward is {}'.format(self.reward))

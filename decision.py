@@ -31,11 +31,26 @@ class Agent(object):
         self.update_network_parameters(tau=1)
 
     def choose_action(self, observation):
-        state = T.Tensor([observation]).to(self.actor.device)
-        actions, _ = self.actor.sample_normal(state, reparameterize=False)
+        self.actor.eval()
 
-        return actions.cpu().detach().numpy()[0]
+        state = T.tensor(observation, dtype=T.float).to(\
+                                  self.actor.device)
+        actions,_ = self.actor.sample_normal(state, reparameterize=False)
+        # mu_prime = mu + T.tensor(self.noise(),
+        #                          dtype=T.float).to(self.actor.device)
+        # when adding noise, the bound operation should be implemented
+        self.actor.train()
+        return actions.cpu().detach().numpy()
 
+    ###SAC
+    # def choose_action(self, observation):
+    #     state = T.Tensor([observation]).to(self.actor.device)
+    #     actions, _ = self.actor.sample_normal(state, reparameterize=False)
+    #
+    #     return actions.cpu().detach().numpy()[0]
+    ###
+
+    ###DDPG
     # def choose_action(self, observation):
     #     self.actor.eval()
     #     observation = T.tensor(observation, dtype=T.float).to(\
@@ -46,6 +61,7 @@ class Agent(object):
     #     # when adding noise, the bound operation should be implemented
     #     self.actor.train()
     #     return mu.cpu().detach().numpy()
+
 
     def remember(self, state, action, reward, new_state, done):
         self.memory.store_transition(state, action, reward, new_state, done)

@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 
 UEnet = Agent( alpha=0.0003, beta=0.0003, input_dims=[8],
                  env=None, gamma=0.99, n_actions=2, max_size=1000000, tau=0.005,
-                 layer1_size=256, layer2_size=256, batch_size=256, reward_scale=2)
+                 layer1_size=256, layer2_size=256, batch_size=20000, reward_scale=2)
 '''原设定参数
  UEnet = Agent(alpha=0.000025, beta=0.00025, input_dims = 8, tau=0.001, \
               env=None, batch_size=64, layer1_size=500, layer2_size=300,
@@ -23,7 +23,7 @@ UEnet = Agent( alpha=0.0003, beta=0.0003, input_dims=[8],
 env = MECsystem(apply_num, UEnet)
 MECSnet = Agent(alpha=0.0003, beta=0.0003, input_dims = \
               [8*apply_num+BS2MECS_rate.size*channel_gain.size+1],
-              tau=0.005, env=env, max_size=1000000, batch_size=256, layer1_size=256,
+              tau=0.005, env=env, max_size=1000000, batch_size=20000, layer1_size=256,
               layer2_size=256, n_actions=apply_num*8,reward_scale=2)
 
 '''原设定参数
@@ -58,6 +58,12 @@ for i in range(10):
         print('reward is： {}'.format(reward))
         list.append(reward)
     score_history.append(score)
+#     print('episode ', i, 'score %.2f' % score, '100 game average %.2f' % np.mean(score_history[-100:]))     ##取最后一百场game并取平均值以了解学习情况
+#     if i % 25 == 0:                     ##每25场game保存模型
+#         UEnet.save_models()
+# filename = 'MEC_offloading.png'
+# plot_learning(score_history, filename, 'window  =100')
+
 
 #####################################SAC改版simulate
 # for i in range(n_games):
@@ -105,11 +111,7 @@ for i in range(10):
 
 
 
-#     print('episode ', i, 'score %.2f' % score, '100 game average %.2f' % np.mean(score_history[-100:]))     ##取最后一百场game并取平均值以了解学习情况
-#     if i % 25 == 0:                     ##每25场game保存模型
-#         UEnet.save_models()
-# filename = 'MEC_offloading.png'
-# plot_learning(score_history, filename, 'window  =100')
+
 
 print(list)
 plt.plot(np.arange(len(list)),list)
@@ -120,11 +122,4 @@ plt.grid()
 plt.savefig('figure2.eps', format='eps', dpi=1000)
 plt.show()
 
-'''
-plt.plot(format(reward))
-plt.ylabel('Return')
-plt.xlabel("Episode")
-plt.grid(True)
-plt.show()
 
-'''
