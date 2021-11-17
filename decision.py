@@ -31,16 +31,15 @@ class Agent(object):
         self.update_network_parameters(tau=1)
 
     def choose_action(self, observation):
-        self.actor.eval()
+        # self.actor.eval()
 
-        state = T.tensor(observation, dtype=T.float).to(\
-                                  self.actor.device)
-        actions,_ = self.actor.sample_normal(state, reparameterize=False)
+        state = T.tensor(observation, dtype=T.float).to(self.actor.device)
+        actions, _ = self.actor.sample_normal(state, reparameterize=False)
         # mu_prime = mu + T.tensor(self.noise(),
         #                          dtype=T.float).to(self.actor.device)
         # when adding noise, the bound operation should be implemented
-        self.actor.train()
-        return actions.cpu().detach().numpy()
+        # self.actor.train()
+        return actions.cpu().detach().numpy()[0]
 
     ###SAC
     # def choose_action(self, observation):
@@ -232,7 +231,7 @@ class ValueNetwork(nn.Module):
 
 class ActorNetwork(nn.Module):
     def __init__(self, alpha, input_dims, max_action, fc1_dims=256,
-            fc2_dims=256, n_actions=2, name='actor', chkpt_dir='F:\MEC_SAC'):
+            fc2_dims=256, n_actions=2, name='actor', chkpt_dir='F:\\test_SAC'):
         super(ActorNetwork, self).__init__()
         self.input_dims = input_dims
         self.fc1_dims = fc1_dims
@@ -279,7 +278,7 @@ class ActorNetwork(nn.Module):
         action = T.tanh(actions)*T.tensor(self.max_action).to(self.device)
         log_probs = probabilities.log_prob(actions)
         log_probs -= T.log(1-action.pow(2)+self.reparam_noise)
-        log_probs = log_probs.sum(1, keepdim=True)
+        log_probs = log_probs.sum(-1, keepdim=True)       ##log_probs = log_probs.sum(1, keepdim=True)
 
         return action, log_probs
 

@@ -56,7 +56,7 @@ class server(object):
 
     def preprocess(self, action):
         action = np.clip(action, -.9999999, .9999999)
-        action = np.multiply((action.reshape((-1, 4)) + 1) / 2, self.action_scale)
+        action = np.multiply((action.reshape((-1, 1)) + 1) / 2, self.action_scale)   #action = np.multiply((action.reshape((-1, 4)) + 1) / 2, self.action_scale)
         action[:, :-1] = action[:, :-1].astype(int)
         action[:, -1] = np.maximum(self.f_minportion, action[:, -1])
         return action
