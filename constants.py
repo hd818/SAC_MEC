@@ -31,7 +31,7 @@ noise = 4e-8  # W
 # MECS
 frequency = 20*GHZ  # GHz
 f_minportion = 0.1*GHZ  # GHz  # not implemented yet
-apply_num = 1  # num of offloading apply input of MECS network
+apply_num = 1  # num of offloading apply input of MECS network  MECS网络输入的卸载应用数
 
 # User Equipments
 # Five zones: SBS1, SBS2, SBS3, SBS4 and out of all BS serve

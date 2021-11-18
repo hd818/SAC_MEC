@@ -23,9 +23,10 @@ UEnet = Agent( alpha=0.0003, beta=0.0003, input_dims=[8],
 '''
 env = MECsystem(apply_num, UEnet)
 MECSnet = Agent(alpha=0.0003, beta=0.0003, input_dims = \
-              [8*apply_num+BS2MECS_rate.size*channel_gain.size+1],
+    (8*apply_num+BS2MECS_rate.size*channel_gain.size+1,),
               tau=0.005, env=env, max_size=1000000, batch_size=256, layer1_size=256,
               layer2_size=256, n_actions=apply_num*8,reward_scale=2)
+print('8*apply_num+BS2MECS_rate.size*channel_gain.size+1=',8*apply_num+BS2MECS_rate.size*channel_gain.size+1)
 
 '''原设定参数
 MECSnet = Agent(alpha=0.000025, beta=0.00025, input_dims = \

@@ -33,8 +33,9 @@ class Agent(object):
     def choose_action(self, observation):
         # self.actor.eval()
 
-        state = T.tensor(observation, dtype=T.float).to(self.actor.device)
+        state = T.tensor([observation], dtype=T.float).to(self.actor.device)
         actions, _ = self.actor.sample_normal(state, reparameterize=False)
+
         # mu_prime = mu + T.tensor(self.noise(),
         #                          dtype=T.float).to(self.actor.device)
         # when adding noise, the bound operation should be implemented
@@ -98,8 +99,8 @@ class Agent(object):
         self.critic_2.load_checkpoint()
 
     def learn(self):
-        if self.memory.mem_cntr < self.batch_size:
-            return
+        # if self.memory.mem_cntr < self.batch_size:
+        #     return
 
         state, action, reward, new_state, done = \
             self.memory.sample_buffer(self.batch_size)
@@ -108,6 +109,7 @@ class Agent(object):
         done = T.tensor(done).to(self.actor.device)
         state_ = T.tensor(new_state, dtype=T.float).to(self.actor.device)
         state = T.tensor(state, dtype=T.float).to(self.actor.device)
+        print('state=',state)                           ##############新加监测state
         action = T.tensor(action, dtype=T.float).to(self.actor.device)
 
         value = self.value(state).view(-1)
@@ -231,7 +233,7 @@ class ValueNetwork(nn.Module):
 
 class ActorNetwork(nn.Module):
     def __init__(self, alpha, input_dims, max_action, fc1_dims=256,
-            fc2_dims=256, n_actions=2, name='actor', chkpt_dir='F:\\test_SAC'):
+            fc2_dims=256, n_actions=2, name='actor', chkpt_dir='F:\MEC_SAC'):
         super(ActorNetwork, self).__init__()
         self.input_dims = input_dims
         self.fc1_dims = fc1_dims
@@ -269,6 +271,7 @@ class ActorNetwork(nn.Module):
     def sample_normal(self, state, reparameterize=True):
         mu, sigma = self.forward(state)
         probabilities = Normal(mu, sigma)
+        print('mu=',mu)                    ##############新加监测mu
 
         if reparameterize:
             actions = probabilities.rsample()
@@ -278,7 +281,7 @@ class ActorNetwork(nn.Module):
         action = T.tanh(actions)*T.tensor(self.max_action).to(self.device)
         log_probs = probabilities.log_prob(actions)
         log_probs -= T.log(1-action.pow(2)+self.reparam_noise)
-        log_probs = log_probs.sum(-1, keepdim=True)       ##log_probs = log_probs.sum(1, keepdim=True)
+        log_probs = log_probs.sum(1, keepdim=True)       ##log_probs = log_probs.sum(1, keepdim=True)
 
         return action, log_probs
 
