@@ -9,7 +9,7 @@ from torch.distributions.normal import Normal
 
 
 class Agent(object):
-    def __init__(self, alpha=0.0003, beta=0.0003, input_dims=[8],
+    def __init__(self, alpha=0.0003, beta=0.0003, input_dims=8,
                  env=None, gamma=0.99, n_actions=2, max_size=1000000, tau=0.005,
                  layer1_size=256, layer2_size=256, batch_size=256, reward_scale=2):
         self.gamma = gamma
@@ -109,7 +109,7 @@ class Agent(object):
         done = T.tensor(done).to(self.actor.device)
         state_ = T.tensor(new_state, dtype=T.float).to(self.actor.device)
         state = T.tensor(state, dtype=T.float).to(self.actor.device)
-        print('state=',state)                           ##############新加监测state
+        # print('state=',state)                           ##############新加监测state
         action = T.tensor(action, dtype=T.float).to(self.actor.device)
 
         value = self.value(state).view(-1)
@@ -271,7 +271,7 @@ class ActorNetwork(nn.Module):
     def sample_normal(self, state, reparameterize=True):
         mu, sigma = self.forward(state)
         probabilities = Normal(mu, sigma)
-        print('mu=',mu)                    ##############新加监测mu
+        # print('mu=',mu)                    ##############新加监测mu
 
         if reparameterize:
             actions = probabilities.rsample()
